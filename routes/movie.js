@@ -87,3 +87,5 @@ route.post("/", async(req, res)=>{
 
 //ucinimo definisane rute dostupnim u app.js
 module.exports= route;
+
+
