@@ -5,11 +5,32 @@
 
 const express = require("express");
 const route = express.Router();  //umesto app ovde koristimo route
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+require('dotenv').config();
 
 /**
  * Potrebni modeli za rute u ovom fajlu
  */
 const User = require("../models/User");
+
+function authToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+  
+    if (token == null) return res.status(401).json({ msg: err });
+  
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    
+        if (err) return res.status(403).json({ msg: err });
+    
+        req.user = user;
+    
+        next();
+    });
+}
+
+route.use(authToken);
 
 /**
  * Ruta koja dohvata po id-u.  Adresa je http://localhost:8000/user/ID
@@ -26,22 +47,6 @@ route.get("/:_id", async (req, res)=>{
     }
     else {
         res.status(404);
-    }
-});
-
-route.get("/login/:_id", async (req, res)=>{
-    //pronadjemo
-    let users = await User.find({
-        _id: req.params._id,
-        pass:req.body.pass
-    });
-    //ako ima saljemo klijentu json odgovor
-    //ako nema saljemo 404
-    if(users){
-        res.send(users);
-    }
-    else {
-        res.status(404).send("Ne postoji user sa unetim id i passwordom.");
     }
 });
 
@@ -108,7 +113,30 @@ route.delete("/:_id",async(req,res)=>{
  * a ispod toga u body tabu upisi json sadrzaj koji hoces da posaljes ovoj ruti.
  * Mobilna aplikacija ce slati takav podatak kad bude slala zahtev
  */
-route.post("/", async(req, res)=>{
+
+
+/*route.post("/login", async (req, res)=>{
+    //pronadjemo
+    let users = await User.find({
+        _id: req.body._id,
+        pass: req.body.pass
+    });
+    //ako ima saljemo klijentu json odgovor
+    //ako nema saljemo 400
+    if(users){
+        const usr={
+            _id:req.body._id,
+            pass:req.body.pass
+        }
+        const token = jwt.sign(req.body._id,process.env.ACCESS_TOKEN_SECRET);
+        res.json({token: token});
+    }
+    else {
+        res.status(400).json({msg: "Ne postoji user sa unetim id i passwordom."});
+    }
+});
+
+route.post("/register", async(req, res)=>{
     //primer json zahteva koji saljemo - kopiraj ovo u body requesta u thunder client
     /*
 {
@@ -125,7 +153,7 @@ route.post("/", async(req, res)=>{
     //json koji smo poslali u body ce biti isparsovan kroz body-parser i u body imamo spreman objekat
     
     //sada hocemo da napravimo novi User model (objekat) i napunimo ga podacima iz req.body, pa da sacuvamo to
-
+/*
     let newUser = new User();
     newUser._id = req.body._id;
     newUser.pass=req.body.pass;
@@ -141,7 +169,7 @@ route.post("/", async(req, res)=>{
     await newUser.save();  //ovo salje poruku na mongo 
 
     res.send(newUser); //kao odgovor vratimo json tog modela koji je kreiran, ovde treba da imamo i ID
-});
+});*/
 
 //ucinimo definisane rute dostupnim u app.js
 module.exports= route;

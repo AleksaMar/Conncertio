@@ -5,13 +5,31 @@
 
 const express = require("express");
 const route = express.Router();  //umesto app ovde koristimo route
-
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 /**
  * Potrebni modeli za rute u ovom fajlu
  */
 const Movie = require("../models/Movie");
 
+function authToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+  
+    if (token == null) return res.status(401).json({ msg: err });
+  
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    
+        if (err) return res.status(403).json({ msg: err });
+    
+        req.user = user;
+    
+        next();
+    });
+}
+
+route.use(authToken);
 
 /**
  * Ruta koja dohvata po id-u.  Adresa je http://localhost:8000/movie/ID

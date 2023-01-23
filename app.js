@@ -1,6 +1,8 @@
 //web server
 const express = require("express");
 const app = express();
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 //middleware koji automatski prepakuje JSON podatke iz requesta u objekat (radi json.parse() tamo gde treba)
 const bodyParser = require("body-parser");
@@ -45,6 +47,9 @@ app.use("/event", eventRoutes);
 //plan rute: http://localhost:8000/plan/...
 const planRoutes = require("./routes/plan");
 app.use("/plan", planRoutes);
+
+const rlRoutes=require("./routes/rl");
+app.use("/rl",rlRoutes);
 
 app.use((error,req,res,next) => {
     return res.status(500).json({ error: error.toString() });

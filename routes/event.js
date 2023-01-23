@@ -6,11 +6,31 @@
 const express = require("express");
 const { model } = require("mongoose");
 const route = express.Router();  //umesto app ovde koristimo route
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 /**
  * Potrebni modeli za rute u ovom fajlu
  */
 const Event = require("../models/Event");
+
+function authToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+  
+    if (token == null) return res.status(401).json({ msg: err });
+  
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    
+        if (err) return res.status(403).json({ msg: err });
+    
+        req.user = user;
+    
+        next();
+    });
+}
+
+route.use(authToken);
 
 /**
  * Ruta koja dohvata po id-u.  Adresa je http://localhost:8000/event/ID
@@ -35,13 +55,13 @@ route.get("/:_id", async (req, res,next)=>{
  * adresa je localhost:8000/event/nadjipocreatoru/NESTO
  * :creator je placeholder za deo linka koji ce da se ubaci u promenljivu u req objektu: req.params.creator
  */
-route.get("/nadjipocreatoru/:creator", async (req,res)=>{
+route.get("/nadjipocreatoru/:creator", async (req,res,next)=>{
     //ispisujemo u konzolu na serveru
     console.log("TRAZIMO " + req.params.creator);
     //trazimo u kolekciji zapise koji lice na objekat-objekat ima samo name atribut
     let events = await Event.find({
         creator: {$regex:req.params.creator}
-    });
+    }).catch(next);
     //ispisujemo u konzolu na serveru, za eventualni debug
     console.log("NADJENO:");
     console.log(events);
@@ -49,13 +69,13 @@ route.get("/nadjipocreatoru/:creator", async (req,res)=>{
     res.send(events);
 });
 
-route.get("/nadjipoplaceu/:place", async (req,res)=>{
+route.get("/nadjipoplaceu/:place", async (req,res,next)=>{
     //ispisujemo u konzolu na serveru
     console.log("TRAZIMO " + req.params.place);
     //trazimo u kolekciji zapise koji lice na objekat-objekat ima samo name atribut
     let events = await Event.find({
         place: {$regex:req.params.place}
-    });
+    }).catch(next);
     //ispisujemo u konzolu na serveru, za eventualni debug
     console.log("NADJENO:");
     console.log(events);
