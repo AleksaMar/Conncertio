@@ -35,11 +35,11 @@ route.use(authToken);
 /**
  * Ruta koja dohvata po id-u.  Adresa je http://localhost:8000/user/ID
  */
-route.get("/:_id", async (req, res)=>{
+route.get("/:_id", async (req, res, next)=>{
     //pronadjemo
     let users = await User.find({
         _id: req.params._id
-    });
+    }).catch(next);
     //ako ima saljemo klijentu json odgovor
     //ako nema saljemo 404
     if(users){
@@ -55,13 +55,13 @@ route.get("/:_id", async (req, res)=>{
  * adresa je localhost:8000/user/nadjipoimenu/NESTO
  * :name je placeholder za deo linka koji ce da se ubaci u promenljivu u req objektu: req.params.name
  */
-route.get("/nadjipoimenu/:name", async (req,res)=>{
+route.get("/nadjipoimenu/:name", async (req,res,next)=>{
     //ispisujemo u konzolu na serveru
     console.log("TRAZIMO " + req.params.name);
     //trazimo u kolekciji zapise koji lice na objekat-objekat ima samo name atribut
     let users = await User.find({
         name: req.params.name
-    });
+    }).catch(next);
     //ispisujemo u konzolu na serveru, za eventualni debug
     console.log("NADJENO:");
     console.log(users);
@@ -80,7 +80,7 @@ route.get("/nadjipoprezimenu/:surname", async (req,res)=>{
     //trazimo u kolekciji zapise koji lice na objekat-objekat ima samo name atribut
     let users = await User.find({
         surname: req.params.surname
-    });
+    }).catch(next);
     //ispisujemo u konzolu na serveru, za eventualni debug
     console.log("NADJENO:");
     console.log(users);

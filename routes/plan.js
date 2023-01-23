@@ -34,11 +34,11 @@ route.use(authToken);
 /**
  * Ruta koja dohvata po id-u.  Adresa je http://localhost:8000/plan/ID
  */
-route.get("/:_id", async (req, res)=>{
+route.get("/:_id", async (req, res,next)=>{
     //pronadjemo
     let plans = await Plan.find({
         _id: req.params._id
-    });
+    }).catch(next);
     //ako ima saljemo klijentu json odgovor
     //ako nema saljemo 404
     if(plans){
@@ -54,13 +54,27 @@ route.get("/:_id", async (req, res)=>{
  * adresa je localhost:8000/plan/nadjipocreatoru/NESTO
  * :creator je placeholder za deo linka koji ce da se ubaci u promenljivu u req objektu: req.params.creator
  */
-route.get("/nadjipocreatoru/:creator", async (req,res)=>{
+route.get("/nadjipocreatoru/:creator", async (req,res,next)=>{
     //ispisujemo u konzolu na serveru
     console.log("TRAZIMO " + req.params.creator);
     //trazimo u kolekciji zapise koji lice na objekat-objekat ima creator atribut
     let plans = await Plan.find({
         creator: {$regex:req.params.creator}
-    });
+    }).catch(next);
+    //ispisujemo u konzolu na serveru, za eventualni debug
+    console.log("NADJENO:");
+    console.log(plans);
+    //saljemo klijentu json odgovor
+    res.send(plans);
+});
+
+route.get("/nadjipoeventu/:eventid", async (req,res,next)=>{
+    //ispisujemo u konzolu na serveru
+    console.log("TRAZIMO " + req.params.eventid);
+    //trazimo u kolekciji zapise koji lice na objekat-objekat ima samo name atribut
+    let plans = await Plan.find({
+        eventid: req.params.eventid
+    }).catch(next);
     //ispisujemo u konzolu na serveru, za eventualni debug
     console.log("NADJENO:");
     console.log(plans);
@@ -111,7 +125,10 @@ route.post("/", async(req, res)=>{
     "creator": "@m_axelaa_",
     "eventid" : "63c5cf4dfc63e2458b85bc41",
     "note": "neki note",
-    "usersid":["@m_axelaa_","@branko_basaric"]
+    "usersid":["@m_axelaa_","@branko_basaric"],
+    "startLocation": [{
+      "latitude": 21.545,
+      "longitude": 2.342}]
 }
     */
     //json koji smo poslali u body ce biti isparsovan kroz body-parser i u body imamo spreman objekat
@@ -123,6 +140,7 @@ route.post("/", async(req, res)=>{
     newPlan.eventid = req.body.eventid;
     newPlan.note = req.body.note;
     newPlan.usersid=req.body.usersid;
+    newPlan.startLocation=req.body.startLocation;
 
     console.log(newPlan);
 

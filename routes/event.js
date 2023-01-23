@@ -98,7 +98,7 @@ route.put("/:_id", async (req,res)=>{
 //http://localhost:8000/event/:_id
 route.delete("/:id", async (req,res)=>{
     let events=await Event.findByIdAndDelete(req.params.id)
-    res.send(events);
+    res.json('succesfully deleted');
 });
 
 //http://localhost:8000/event/:_id
