@@ -74,7 +74,7 @@ route.get("/nadjipoimenu/:name", async (req,res,next)=>{
  * adresa je localhost:8000/user/nadjipoprezimenu/NESTO
  * :surname je placeholder za deo linka koji ce da se ubaci u promenljivu u req objektu: req.params.surname
  */
-route.get("/nadjipoprezimenu/:surname", async (req,res)=>{
+route.get("/nadjipoprezimenu/:surname", async (req,res,next)=>{
     //ispisujemo u konzolu na serveru
     console.log("TRAZIMO " + req.params.surname);
     //trazimo u kolekciji zapise koji lice na objekat-objekat ima samo name atribut
@@ -88,8 +88,22 @@ route.get("/nadjipoprezimenu/:surname", async (req,res)=>{
     res.send(users);
 });
 
-//http://localhost:8000/user/:_id
-route.put("/:_id", async (req,res)=>{
+route.get("/nadjipoplanu/:plansid", async (req,res,next)=>{
+    //ispisujemo u konzolu na serveru
+    console.log("TRAZIMO " + req.params.plansid);
+    //trazimo u kolekciji zapise koji lice na objekat-objekat ima samo name atribut
+    let users = await User.find({
+        plansid: req.params.plansid
+    }).catch(next);
+    //ispisujemo u konzolu na serveru, za eventualni debug
+    console.log("NADJENO:");
+    console.log(users);
+    //saljemo klijentu json odgovor
+    res.send(users);
+});
+
+//http://localhost:8000/user/slika/:_id
+route.put("/slika/:_id", async (req,res)=>{
     //ispisujemo u konzolu na serveru
     console.log("TRAZIMO " + req.params._id);
     //trazimo u kolekciji zapise koji lice na objekat-objekat ima _id atribut
@@ -98,6 +112,29 @@ route.put("/:_id", async (req,res)=>{
     });
     res.send(users);
 });
+
+//http://localhost:8000/user/dodaj/:_id
+route.put("/dodaj/:_id", async (req,res)=>{
+    //ispisujemo u konzolu na serveru
+    console.log("TRAZIMO " + req.params._id);
+    //trazimo u kolekciji zapise koji lice na objekat-objekat ima _id atribut
+    let users = await User.findByIdAndUpdate(req.params._id,{
+        $push:{plansid:req.body.plansid}
+    });
+    res.send(users);
+});
+
+//http://localhost:8000/user/brisi/:_id
+route.put("/obrisi/:_id", async (req,res)=>{
+    //ispisujemo u konzolu na serveru
+    console.log("TRAZIMO " + req.params._id);
+    //trazimo u kolekciji zapise koji lice na objekat-objekat ima _id atribut
+    let users = await User.findByIdAndUpdate(req.params._id,{
+        $pull:{plansid:req.body.plansid}
+    });
+    res.send(users);
+});
+
 
 //http://localhost:8000/user/:_id
 route.delete("/:_id",async(req,res)=>{
@@ -147,7 +184,8 @@ route.post("/register", async(req, res)=>{
     "birthYear": 2005,
     "telnum": "+381655062789",
     "city": "Smederevska Palanka",
-    "picture": "/app/public/logo.png"
+    "picture": "/app/public/logo.png",
+    "plansid": ["63cef6561c59aed5b5621b78","63cef63d1c59aed5b5621b76"]
 }
     */
     //json koji smo poslali u body ce biti isparsovan kroz body-parser i u body imamo spreman objekat
@@ -163,6 +201,7 @@ route.post("/register", async(req, res)=>{
     newUser.telnum=req.body.telnum;
     newUser.city = req.body.city;
     newUser.picture =req.body.picture;
+    newUser.plansid= req.body.plansid;
 
     console.log(newUser);
 

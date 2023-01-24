@@ -54,6 +54,7 @@ route.post("/register", async(req, res)=>{
     newUser.telnum=req.body.telnum;
     newUser.city = req.body.city;
     newUser.picture =req.body.picture;
+    newUser.plansid= req.body.plansid;
 
     console.log(newUser);
 

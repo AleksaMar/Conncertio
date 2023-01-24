@@ -16,7 +16,8 @@ const userSchema = new mongoose.Schema({
     birthYear: Number,
     telnum: String,
     city: String,
-    picture: String
+    picture: String,
+    plansid:Array,
 });
 //kompajliramo shemu u model
 const User = mongoose.model('users', userSchema);
