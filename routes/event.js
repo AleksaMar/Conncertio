@@ -4,7 +4,7 @@
  */
 
 const express = require("express");
-const { model } = require("mongoose");
+const { model, Collection } = require("mongoose");
 const route = express.Router();  //umesto app ovde koristimo route
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -32,13 +32,28 @@ function authToken(req, res, next) {
 
 route.use(authToken);
 
+route.get("/ev", async (req, res,next)=>{
+    //pronadjemo
+    const filter={};
+   let events = await Event.find(
+       filter
+   ).catch(next);
+   
+   if(events){
+    res.send(events);
+    }
+    else {
+    res.status(404);
+    }
+});
+
 /**
  * Ruta koja dohvata po id-u.  Adresa je http://localhost:8000/event/ID
  */
 route.get("/:_id", async (req, res,next)=>{
      //pronadjemo
     let events = await Event.find({
-        _id: req.params._id
+        _id:req.params._id
     }).catch(next);
     //ako ima saljemo klijentu json odgovor
     //ako nema saljemo 404

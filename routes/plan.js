@@ -34,6 +34,22 @@ route.use(authToken);
 /**
  * Ruta koja dohvata po id-u.  Adresa je http://localhost:8000/plan/ID
  */
+
+route.get("/ev", async (req, res,next)=>{
+    //pronadjemo
+    const filter={};
+   let plans = await Plan.find(
+       filter
+   ).catch(next);
+   
+   if(plans){
+    res.send(plans);
+    }
+    else {
+    res.status(404);
+    }
+});
+
 route.get("/:_id", async (req, res,next)=>{
     //pronadjemo
     let plans = await Plan.find({
