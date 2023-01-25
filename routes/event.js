@@ -33,17 +33,19 @@ function authToken(req, res, next) {
 route.use(authToken);
 
 route.get("/ev", async (req, res,next)=>{
-    //pronadjemo
-    const filter={};
-   let events = await Event.find(
-       filter
-   ).catch(next);
-   
-   if(events){
-    res.send(events);
-    }
-    else {
-    res.status(404);
+    try{
+       //pronadjemo
+       const filter={};
+       let events = await Event.find(filter);
+
+       if(events){
+        res.send(events);
+       }
+       else {
+        res.status(404);
+       }
+    } catch(err){
+        res.status(500).json(err);   
     }
 });
 
