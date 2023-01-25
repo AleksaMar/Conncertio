@@ -19,7 +19,7 @@ route.post("/login", async (req, res)=>{
             _id:req.body._id,
             pass:req.body.pass
         }*/
-        const token = jwt.sign(req.body._id,process.env.ACCESS_TOKEN_SECRET);
+        const token = jwt.sign(req.body._id, "" + process.env.ACCESS_TOKEN_SECRET);
         res.json({token: token});
     }
     else {
@@ -61,7 +61,7 @@ route.post("/register", async(req, res)=>{
 
     //res.send(newUser); //kao odgovor vratimo json tog modela koji je kreiran, ovde treba da imamo i ID
 
-    const token = jwt.sign(newUser._id,process.env.ACCESS_TOKEN_SECRET);
+    const token = jwt.sign(newUser._id,"" + process.env.ACCESS_TOKEN_SECRET);
     res.json({token: token});
 
     await newUser.save();  //ovo salje poruku na mongo 
