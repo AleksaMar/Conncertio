@@ -70,6 +70,21 @@ route.get("/:_id", async (req, res,next)=>{
  * adresa je localhost:8000/event/nadjipocreatoru/NESTO
  * :creator je placeholder za deo linka koji ce da se ubaci u promenljivu u req objektu: req.params.creator
  */
+
+route.get("/nadjipoplanu/:plansid", async (req,res,next)=>{
+    //ispisujemo u konzolu na serveru
+    console.log("TRAZIMO " + req.params.creator);
+    //trazimo u kolekciji zapise koji lice na objekat-objekat ima samo name atribut
+    let events = await Event.find({
+        plansid: req.params.plansid
+    }).catch(next);
+    //ispisujemo u konzolu na serveru, za eventualni debug
+    console.log("NADJENO:");
+    console.log(events);
+    //saljemo klijentu json odgovor
+    res.send(events);
+});
+
 route.get("/nadjipocreatoru/:creator", async (req,res,next)=>{
     //ispisujemo u konzolu na serveru
     console.log("TRAZIMO " + req.params.creator);
@@ -95,6 +110,16 @@ route.get("/nadjipoplaceu/:place", async (req,res,next)=>{
     console.log("NADJENO:");
     console.log(events);
     //saljemo klijentu json odgovor
+    res.send(events);
+});
+
+route.put("/brisi/:_id", async (req,res)=>{
+    //ispisujemo u konzolu na serveru
+    console.log("TRAZIMO " + req.params._id);
+    //trazimo u kolekciji zapise koji lice na objekat-objekat ima _id atribut
+    let events = await Event.findByIdAndUpdate(req.params._id,{
+        $pull:{plansid:req.body.plansid}
+    });
     res.send(events);
 });
 
