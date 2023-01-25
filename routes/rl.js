@@ -7,6 +7,7 @@ require('dotenv').config();
 const User = require("../models/User");
 
 route.post("/login", async (req, res)=>{
+    try{
     //pronadjemo
     let users = await User.find({
         _id: req.body._id,
@@ -25,9 +26,13 @@ route.post("/login", async (req, res)=>{
     else {
         res.status(400).json({msg: "Ne postoji user sa unetim id i passwordom."});
     }
+    } catch(err){
+    res.status(500).json(err);
+    }
 });
 
 route.post("/register", async(req, res)=>{
+    try{
     //primer json zahteva koji saljemo - kopiraj ovo u body requesta u thunder client
     /*
 {
@@ -65,6 +70,9 @@ route.post("/register", async(req, res)=>{
     res.json({token: token});
 
     await newUser.save();  //ovo salje poruku na mongo 
+    }catch(err){
+    res.status(500).json(err);
+    }
 });
 
 //ucinimo definisane rute dostupnim u app.js

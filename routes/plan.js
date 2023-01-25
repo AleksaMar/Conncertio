@@ -36,25 +36,29 @@ route.use(authToken);
  */
 
 route.get("/ev", async (req, res,next)=>{
+   try{
     //pronadjemo
     const filter={};
    let plans = await Plan.find(
        filter
-   ).catch(next);
-   
-   if(plans){
+   );
+      if(plans){
     res.send(plans);
     }
     else {
     res.status(404);
     }
+    } catch(err){
+    res.status(500).json(err);
+    }
 });
 
 route.get("/:_id", async (req, res,next)=>{
+    try{
     //pronadjemo
     let plans = await Plan.find({
         _id: req.params._id
-    }).catch(next);
+    });
     //ako ima saljemo klijentu json odgovor
     //ako nema saljemo 404
     if(plans){
@@ -62,6 +66,9 @@ route.get("/:_id", async (req, res,next)=>{
     }
     else {
         res.status(404);
+    }
+    } catch(err){
+    res.status(500).json(err);
     }
 });
 
@@ -71,35 +78,44 @@ route.get("/:_id", async (req, res,next)=>{
  * :creator je placeholder za deo linka koji ce da se ubaci u promenljivu u req objektu: req.params.creator
  */
 route.get("/nadjipocreatoru/:creator", async (req,res,next)=>{
+    try{
     //ispisujemo u konzolu na serveru
     console.log("TRAZIMO " + req.params.creator);
     //trazimo u kolekciji zapise koji lice na objekat-objekat ima creator atribut
     let plans = await Plan.find({
         creator: {$regex:req.params.creator}
-    }).catch(next);
+    });
     //ispisujemo u konzolu na serveru, za eventualni debug
     console.log("NADJENO:");
     console.log(plans);
     //saljemo klijentu json odgovor
     res.send(plans);
+    } catch(err){
+    res.status(500).json(err);
+    }
 });
 
 route.get("/nadjipoeventu/:eventid", async (req,res,next)=>{
+    try{
     //ispisujemo u konzolu na serveru
     console.log("TRAZIMO " + req.params.eventid);
     //trazimo u kolekciji zapise koji lice na objekat-objekat ima samo name atribut
     let plans = await Plan.find({
         eventid: req.params.eventid
-    }).catch(next);
+    });
     //ispisujemo u konzolu na serveru, za eventualni debug
     console.log("NADJENO:");
     console.log(plans);
     //saljemo klijentu json odgovor
     res.send(plans);
+    } catch(err){
+    res.status(500).json(err);
+    }
 });
 
 //http://localhost:8000/plan/:_id
 route.put("/:_id", async (req,res)=>{
+    try{
     //ispisujemo u konzolu na serveru
     console.log("TRAZIMO " + req.params._id);
     //trazimo u kolekciji zapise koji lice na objekat-objekat ima _id atribut
@@ -107,10 +123,14 @@ route.put("/:_id", async (req,res)=>{
         $push:{usersid:req.body.usersid}
     });
     res.send(plans);
+    } catch(err){
+    res.status(500).json(err);
+    }
 });
 
 //http://localhost:8000/plan/brisi/:_id
 route.put("/brisi/:_id", async (req,res)=>{
+    try{
     //ispisujemo u konzolu na serveru
     console.log("TRAZIMO " + req.params._id);
     //trazimo u kolekciji zapise koji lice na objekat-objekat ima _id atribut
@@ -118,12 +138,19 @@ route.put("/brisi/:_id", async (req,res)=>{
         $pull:{usersid:req.body.usersid}
     });
     res.send(plans);
+    }catch(err){
+    res.status(500).json(err);
+    }
 });
 
 //http://localhost:8000/plan/:_id
 route.delete("/:id", async (req,res)=>{
+    try{
     let plans=await Plan.findByIdAndDelete(req.params.id)
     res.send(plans);
+    } catch(err){
+    res.status(500).json(err);
+    }
 });
 
 /**
@@ -135,6 +162,7 @@ route.delete("/:id", async (req,res)=>{
  * Mobilna aplikacija ce slati takav podatak kad bude slala zahtev
  */
 route.post("/", async(req, res)=>{
+    try{
     //primer json zahteva koji saljemo - kopiraj ovo u body requesta u thunder client
     /*
 {
@@ -163,6 +191,9 @@ route.post("/", async(req, res)=>{
     await newPlan.save();  //ovo salje poruku na mongo 
 
     res.send(newPlan); //kao odgovor vratimo json tog modela koji je kreiran, ovde treba da imamo i ID
+    } catch(err){
+    res.status(500).json(err);
+    }
 });
 
 //ucinimo definisane rute dostupnim u app.js
