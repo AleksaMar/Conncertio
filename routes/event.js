@@ -191,9 +191,7 @@ route.post("/", async(req, res)=>{
     /*
 {
     "name": "AC/DC u Srbiji",
-    "location": [{
-      "latitude": 21.545,
-      "longitude": 2.342}],
+    "location": ["21.545","2.342"],
     "date": "2009-05-26T22:00:00.000Z",
     "creator": "@m_axelaa_",
     "place": "Beograd",

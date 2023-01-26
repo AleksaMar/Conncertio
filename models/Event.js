@@ -10,7 +10,7 @@ const mongoose = require("mongoose");
 //definisemo shemu
 const eventSchema = new mongoose.Schema({
     name: String,
-    location:[{_id:false,"latitude":Number, "longitude": Number,}],
+    location:[Number, Number],
     date: Date,
     creator: String,
     place: String,

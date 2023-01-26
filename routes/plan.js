@@ -170,9 +170,7 @@ route.post("/", async(req, res)=>{
     "eventid" : "63c5cf4dfc63e2458b85bc41",
     "note": "neki note",
     "usersid":["@m_axelaa_","@branko_basaric"],
-    "startLocation": [{
-      "latitude": 21.545,
-      "longitude": 2.342}]
+    "startLocation": ["21.545","2.342"]
 }
     */
     //json koji smo poslali u body ce biti isparsovan kroz body-parser i u body imamo spreman objekat
