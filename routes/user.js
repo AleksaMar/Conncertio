@@ -31,7 +31,7 @@ function authToken(req, res, next) {
     });
 }
 
-//route.use(authToken);
+route.use(authToken);
 
 /**
  * Ruta koja dohvata po id-u.  Adresa je http://localhost:8000/user/ID
