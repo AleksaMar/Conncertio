@@ -4,6 +4,7 @@ const app = express();
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
+
 //middleware koji automatski prepakuje JSON podatke iz requesta u objekat (radi json.parse() tamo gde treba)
 const bodyParser = require("body-parser");
 app.use(bodyParser.json())
@@ -12,6 +13,8 @@ app.use(bodyParser.json())
 //ovo moze da nam bude zgodno za slike, ako budemo cuvali slike. mada bi bilo pametno da nahvatamo neki storage server u tom slucaju, tipa dropbox
 const path = require('path');
 app.use(express.static(path.join(__dirname, 'public')))
+
+const User = require("./models/User");
 
 //konekcija za mongo
 const mongoose = require("mongoose");
@@ -22,14 +25,17 @@ const MONGO_CONNECTION_STRING = "mongodb+srv://admin:LrT5ANbZCuT6AmB2@conncertio
 
 //rute
 
+app.get("/userphoto/:_id", (req,res)=>{
+    let users = User.findOne({
+        _id: req.params._id
+    });
+    console.log(req.params._id)
+    res.sendFile(path.join(__dirname, 'public','useri',req.params._id+'.png'));
+    });
+
 //home ruta: http://localhost:8000/
 app.get("/", (req, res)=>{
     res.send("Pozdrav sa servera!");
-});
-
-//ruta: http://localhost:8000/a
-app.get("/a", (req, res)=>{
-    res.sendFile('/app/public/index1.html');
 });
 
 //movie rute: http://localhost:8000/movie/...

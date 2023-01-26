@@ -8,6 +8,7 @@ const route = express.Router();  //umesto app ovde koristimo route
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
+const path = require('path');
 
 /**
  * Potrebni modeli za rute u ovom fajlu
@@ -30,7 +31,7 @@ function authToken(req, res, next) {
     });
 }
 
-route.use(authToken);
+//route.use(authToken);
 
 /**
  * Ruta koja dohvata po id-u.  Adresa je http://localhost:8000/user/ID
@@ -54,6 +55,16 @@ route.get("/:_id", async (req, res, next)=>{
     }
 });
 
+
+/*route.get("/userphoto/:_id", (req,res)=>{
+    let users = User.findOne({
+        _id: req.params._id
+    });
+    console.log(users.picture)
+    res.sendFile(path.join(__dirname, 'public', 'useri', users.picture));
+
+    });
+*/
 /**
  * Pravimo rutu koja dohvata usera po imenu, koristimo User model
  * adresa je localhost:8000/user/nadjipoimenu/NESTO
