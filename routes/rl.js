@@ -8,17 +8,14 @@ const User = require("../models/User");
 
 route.post("/login", async (req, res)=>{
     //pronadjemo
-    let users = await User.find({
+    let users = await User.findOne({
         _id: req.body._id,
         pass: req.body.pass
     });
     //ako ima saljemo klijentu json odgovor
     //ako nema saljemo 400
     if(users){
-        /*const usr={
-            _id:req.body._id,
-            pass:req.body.pass
-        }*/
+
         const token = jwt.sign(req.body._id, "" + process.env.ACCESS_TOKEN_SECRET);
         res.json({token: token});
     }
