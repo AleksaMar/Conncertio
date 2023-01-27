@@ -20,7 +20,7 @@ route.post("/login", async (req, res)=>{
         res.json({token: token});
     }
     else {
-        res.status(400).json({msg: "Ne postoji user sa unetim id i passwordom."});
+        res.status(400).json({msg: "Invalid ID or password"});
     }
 });
 
