@@ -13,7 +13,7 @@ const planSchema = new mongoose.Schema({
    eventid: ObjectId,
    note: String,
    usersid: Array,
-   startLocation:[Number, Number]
+   startLocation:Array
 });
 //kompajliramo shemu u model
 const Plan = mongoose.model('plans', planSchema);
